@@ -1,10 +1,16 @@
 # -*-coding:Latin-1 -*
 
-from musicTimer import musicTimer
+from musicTimer import *
+from logPrint import *
 
 
-if __name__ == "__main__":
-    print("Hello world")
+def main():
+    # Log level = debug
+    logPrint(0)
     threadMusicTimer = musicTimer()
     threadMusicTimer.start()
     threadMusicTimer.join()
+
+
+if __name__ == "__main__":
+    main()
