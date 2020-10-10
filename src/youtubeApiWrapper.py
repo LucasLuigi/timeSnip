@@ -20,14 +20,14 @@ class youtubeApiWrapper():
     videoId = "DEFAULT_VALUE"
 
     def __init__(self, youtubeUrl):
-        print("Initializing youtubeApiWrapper with "+youtubeUrl)
-        logPrint.printDebug("youtubeUrl = "+youtubeUrl)
+        logPrint.printLog("Initializing youtubeApiWrapper with "+youtubeUrl)
+        logPrint.printDebug("youtubeUrl: "+youtubeUrl)
         self.videoId = self.extractIdFromUrl(youtubeUrl)
 
     def extractIdFromUrl(self, youtubeUrl):
         splittedListFromUrl = re.split(
             r'[^A-Za-z0-9]+', youtubeUrl)
-        logPrint.printDebug(splittedListFromUrl)
+        logPrint.printDebug("splittedListFromUrl: "+str(splittedListFromUrl))
         # Expected format: ['http(s)', 'www', 'youtube', 'com', 'watch', 'v', '<ID>' ...]
         if (len(splittedListFromUrl) < 2):
             raise urlBadlyFormatted(
@@ -58,7 +58,7 @@ class youtubeApiWrapper():
                     "Url "+youtubeUrl+" badly formatted: not a Youtube video IRL")
 
         videoId = splittedListFromUrl[5+urlContainsWww]
-        logPrint.printDebug("videoId = "+videoId)
+        logPrint.printDebug("videoId: "+videoId)
         return videoId
 
     def getDescriptionField(self):
@@ -77,7 +77,9 @@ class youtubeApiWrapper():
             client_secrets_file, self.scopes)
         # Calls OAUTH2 services on a Browser
         # FIXME Store credentials to prevent a new authorization at every run
-        credentials = flow.run_console()
+        # credentials = flow.run_console()
+        credentials = flow.run_local_server(
+            success_message="This page can now be closed")
         youtube = googleapiclient.discovery.build(
             api_service_name, api_version, credentials=credentials)
 
@@ -86,8 +88,13 @@ class youtubeApiWrapper():
             id=self.videoId
         )
         response = request.execute()
+        #description = response.items[0].snippet.description
+        items = response["items"]
+        snippet = items[0]["snippet"]
+        description = snippet["description"]
 
-        print(response)
+        logPrint.printDebug("description: ")
+        logPrint.printDebug(description)
 
 
 class urlBadlyFormatted(Exception):
