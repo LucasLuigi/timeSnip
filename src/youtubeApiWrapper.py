@@ -97,4 +97,4 @@ class urlBadlyFormatted(Exception):
     def __init__(self, message):
         self.message = "Error: "+message
         logPrint.printError(message)
-        exit
+        exit(-2)
