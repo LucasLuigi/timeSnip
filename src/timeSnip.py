@@ -1,14 +1,19 @@
 # -*-coding:Latin-1 -*
 
 import sys
-# from musicTimer import *
-from logPrint import *
-from youtubeApiWrapper import *
+
+from logPrint import logPrint
+from youtubeApiWrapper import youtubeApiWrapper
+from descriptionParser import descriptionParser
 
 
 def main(argv):
     youtubeApiInst = youtubeApiWrapper(sys.argv[1])
-    youtubeApiInst.getDescriptionField()
+    description = youtubeApiInst.getDescriptionField()
+
+    descriptionParserInst = descriptionParser(description)
+    descriptionParserInst.parse()
+
     # threadMusicTimer = musicTimer()
     # threadMusicTimer.start()
     # threadMusicTimer.join()

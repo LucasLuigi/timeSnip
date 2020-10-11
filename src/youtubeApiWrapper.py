@@ -62,6 +62,9 @@ class youtubeApiWrapper():
         return videoId
 
     def getDescriptionField(self):
+        logPrint.printLog(
+            "Calling Youtube API to get the video description list")
+
         # Disable OAuthlib's HTTPS verification when running locally.
         # *DO NOT* leave this option enabled in production.
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
@@ -95,6 +98,8 @@ class youtubeApiWrapper():
 
         logPrint.printDebug("description: ")
         logPrint.printDebug(description)
+
+        return description
 
 
 class urlBadlyFormatted(Exception):
