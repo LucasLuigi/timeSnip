@@ -73,6 +73,7 @@ class youtubeApiWrapper():
         api_version = "v3"
 
         # This file is secret
+        # FIXME Authorize the case where the cwd is src and not its parent
         client_secrets_file = os.getcwd()+"\\_credentials\\google-api-key.json"
 
         # Get credentials and create an API client

@@ -1,4 +1,4 @@
-from logPrint import *
+from logPrint import logPrint
 
 
 class descriptionParser():
