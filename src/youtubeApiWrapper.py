@@ -26,7 +26,7 @@ class youtubeApiWrapper():
 
     def extractIdFromUrl(self, youtubeUrl):
         splittedListFromUrl = re.split(
-            r'[^A-Za-z0-9]+', youtubeUrl)
+            r'[^A-Za-z0-9\-]+', youtubeUrl)
         logPrint.printDebug("splittedListFromUrl: "+str(splittedListFromUrl))
         # Expected format: ['http(s)', 'www', 'youtube', 'com', 'watch', 'v', '<ID>' ...]
         if (len(splittedListFromUrl) < 2):
@@ -97,8 +97,8 @@ class youtubeApiWrapper():
         snippet = items[0]["snippet"]
         description = snippet["description"]
 
-        logPrint.printDebug("description: ")
-        logPrint.printDebug(description)
+        # logPrint.printDebug("description: ")
+        # logPrint.printDebug(description)
 
         return description
 
