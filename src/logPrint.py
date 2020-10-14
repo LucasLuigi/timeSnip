@@ -8,7 +8,7 @@ class logPrint:
     #   2 : error
     logLevel = 2
 
-    def __init__(self, debugLevel):
+    def __init__(self, debugLevel=2):
         if (debugLevel >= 0 and debugLevel <= 2):
             logPrint.logLevel = debugLevel
         else:

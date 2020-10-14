@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-
-# Sample Python code for youtube.videos.list
-# See instructions for running these code samples locally:
-# https://developers.google.com/explorer-help/guides/code_samples#python
+# -*-coding:Latin-1 -*
 
 import os
 import re
@@ -17,13 +13,14 @@ from logPrint import *
 class youtubeApiWrapper():
 
     scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
-    videoId = "DEFAULT_VALUE"
+    videoId = "DEFAULT-VALUE"
 
     def __init__(self, youtubeUrl):
         logPrint.printLog("Initializing youtubeApiWrapper with "+youtubeUrl)
         logPrint.printDebug("youtubeUrl: "+youtubeUrl)
         self.videoId = self.extractIdFromUrl(youtubeUrl)
 
+    # Extract the video ID from the Youtube URL
     def extractIdFromUrl(self, youtubeUrl):
         splittedListFromUrl = re.split(
             r'[^A-Za-z0-9\-]+', youtubeUrl)
@@ -61,6 +58,7 @@ class youtubeApiWrapper():
         logPrint.printDebug("videoId: "+videoId)
         return videoId
 
+    # Call the Youtube v3 API to get its description field
     def getDescriptionField(self):
         logPrint.printLog(
             "Calling Youtube API to get the video description list")
@@ -83,7 +81,7 @@ class youtubeApiWrapper():
         # FIXME Store credentials to prevent a new authorization at every run
         # credentials = flow.run_console()
         credentials = flow.run_local_server(
-            success_message="This page can now be closed")
+            success_message="Abonnez vous a LukkoLuigi sur Twitch")
         youtube = googleapiclient.discovery.build(
             api_service_name, api_version, credentials=credentials)
 
@@ -103,11 +101,9 @@ class youtubeApiWrapper():
         return description
 
 
+# Raised when the Youtube IRL is badly formatted
 class urlBadlyFormatted(Exception):
-    """Raised when the Youtube IRL is badly formatted
-    """
-
     def __init__(self, message):
-        self.message = "Error: "+message
+        self.message = "Error: "+message+". Exiting."
         logPrint.printError(message)
         exit(-2)
