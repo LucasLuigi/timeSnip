@@ -162,8 +162,8 @@ class descriptionParser():
                     # Reset for the next formatting error found
                     numberOfRemainingAttemptsToParseEachLine = self.MAX_ATTEMPTS_NB_TO_PARSE_TIME_AND_TITLE
 
+                    # FIXME Does not work for "[2:20] the past inside the present"
                     splittedLine = re.split(r'([0-9:]+)', line)
-                    # FIXME not robust
                     offsetForSplittedLineReading = 0
                     if splittedLine[0] == "":
                         # re.split created an empty cell at the beginning, ignore it
