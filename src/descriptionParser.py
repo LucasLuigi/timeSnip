@@ -12,6 +12,12 @@ class descriptionParser():
         self.description = description
         self.chaptersMatrix = np.empty((500, 2), dtype=object)
 
+    # Constants
+    MAX_SIZE_OF_MATRIX = 500
+    MAX_ATTEMPTS_NB_TO_PARSE_TIME_AND_TITLE = 2
+
+    # self.chaptersMatrixSize
+
     # Parse the description field to detect the time and title of each chapter
     def parse(self):
         self._findLineZero()
@@ -82,8 +88,8 @@ class descriptionParser():
         elif (idxOfZeroInSplittedLine == 1):
             flagAllCharsAreZeroOrColonOrSpace = True
             for char in splittedLineList[0]:
-                flagAllCharsAreZeroOrColonOrSpace = (flagAllCharsAreZeroOrColonOrSpace and (
-                    char == ' ') and (char == ':') and (char == '0'))
+                flagAllCharsAreZeroOrColonOrSpace = (flagAllCharsAreZeroOrColonOrSpace and ((
+                    char == ' ') or (char == ':') or (char == '0')))
             if flagAllCharsAreZeroOrColonOrSpace:
                 # <time> is something like " 0:00:00", or less complex
                 patternId = 0
@@ -120,14 +126,13 @@ class descriptionParser():
                         self.lineNbZeroZero = lineNb
                 lineNb = lineNb+1
         if (not isLineAtTimeZero):
-            logPrint.printError("Error: 0:00 not found. Exiting.")
+            logPrint.printError("0:00 not found. Exiting.")
             exit(-3)
 
     # Once the beginning of the chapter list found, parse it entirely and store it in a matrix
     def _parseChapterList(self):
         idxSplitted = 0
         idxOfZeroInSplittedLine = -1
-        totalLineNb = len(self.descriptionLinesList)
         line = self.descriptionLinesList[self.lineNbZeroZero]
         splittedLineList = re.split(r'([0-9]:[0-9][0-9])', line)
         for splittedWord in splittedLineList:
@@ -138,20 +143,58 @@ class descriptionParser():
         # Analyze pattern
         self.patternId = self._analyzeChaptersPattern(
             splittedLineList, idxOfZeroInSplittedLine)
+        logPrint.printLog("Pattern detected: "+str(self.patternId))
 
-        # FIXME tmp
         idxMatrix = 0
-        while (idxMatrix < 4):
-            line = self.descriptionLinesList[self.lineNbZeroZero+idxMatrix]
-            splittedLine = re.split(r'([0-9:]+)', line)
-            if self.patternId == 0:
-                time = splittedLine[0]
-                title = splittedLine[1]
-            elif self.patternId == 1:
-                time = splittedLine[1]
-                title = splittedLine[0]
-            self.chaptersMatrix[idxMatrix, 0] = time
-            self.chaptersMatrix[idxMatrix, 1] = title
-            idxMatrix = idxMatrix+1
+        # To avoid false end of chapters due to problems of formatting in the description, another attempt is given to each non-match
+        numberOfRemainingAttemptsToParseEachLine = self.MAX_ATTEMPTS_NB_TO_PARSE_TIME_AND_TITLE
+        logPrint.printLog("While parsing the chapters, a maximum of "+str(
+            self.MAX_ATTEMPTS_NB_TO_PARSE_TIME_AND_TITLE)+" not matching line(s) is accepted.")
+        offsetForIdxMatrixBecauseOfFalseErrors = 0
 
-        logPrint.printDebug("patternId: "+str(self.patternId))
+        # Max length of the matrix
+        while (idxMatrix < self.MAX_SIZE_OF_MATRIX):
+            # Avoid overflow
+            if((self.lineNbZeroZero + idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors < len(self.descriptionLinesList)) and numberOfRemainingAttemptsToParseEachLine > 0):
+                line = self.descriptionLinesList[self.lineNbZeroZero +
+                                                 idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors]
+                if re.search('[0-9]:[0-5][0-9]', line):
+                    # Reset for the next formatting error found
+                    numberOfRemainingAttemptsToParseEachLine = self.MAX_ATTEMPTS_NB_TO_PARSE_TIME_AND_TITLE
+
+                    splittedLine = re.split(r'([0-9:]+)', line)
+                    # FIXME not robust
+                    offsetForSplittedLineReading = 0
+                    if splittedLine[0] == "":
+                        # re.split created an empty cell at the beginning, ignore it
+                        offsetForSplittedLineReading = 1
+                    if self.patternId == 0:
+                        time = splittedLine[0 + offsetForSplittedLineReading]
+                        title = splittedLine[1 + offsetForSplittedLineReading]
+                    elif self.patternId == 1:
+                        time = splittedLine[1 + offsetForSplittedLineReading]
+                        title = splittedLine[0 + offsetForSplittedLineReading]
+                    else:
+                        logPrint.printError(
+                            "Chapters pattern not found. Exiting.")
+                        exit(-4)
+                    self.chaptersMatrix[idxMatrix, 0] = time
+                    self.chaptersMatrix[idxMatrix, 1] = title
+
+                    # Shift the index only if we have found something to avoid holes because of formatting errors
+                    idxMatrix = idxMatrix+1
+                else:
+                    if numberOfRemainingAttemptsToParseEachLine > 0:
+                        # Second chance
+                        numberOfRemainingAttemptsToParseEachLine = numberOfRemainingAttemptsToParseEachLine - 1
+                        offsetForIdxMatrixBecauseOfFalseErrors = offsetForIdxMatrixBecauseOfFalseErrors + 1
+                        logPrint.printLog("Not matching line found line "+str(self.lineNbZeroZero +
+                                                                              idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors)+", another chance is given.")
+            else:
+                # No more time is detected and the formatting error margin is consumed, the chapter list is over
+                self.chaptersMatrixSize = idxMatrix
+                # End the while loop
+                idxMatrix = self.MAX_SIZE_OF_MATRIX
+
+        logPrint.printLog("The chapter matrix is " +
+                          str(self.chaptersMatrixSize)+" lines long.")

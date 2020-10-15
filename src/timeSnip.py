@@ -14,10 +14,6 @@ def main(argv):
     descriptionParserInst = descriptionParser(description)
     descriptionParserInst.parse()
 
-    # threadMusicTimer = musicTimer()
-    # threadMusicTimer.start()
-    # threadMusicTimer.join()
-
 
 if __name__ == "__main__":
     # Log level = debug

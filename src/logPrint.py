@@ -13,28 +13,28 @@ class logPrint:
             logPrint.logLevel = debugLevel
         else:
             logPrint.printError(
-                "ERROR: debugLevel has not a correct value, "+debugLevel)
+                "[ERR] debugLevel has not a correct value, "+debugLevel)
         pass
 
     def printDebug(cls, value):
-        if (logPrint.logLevel >= 0):
-            print(value)
+        if (logPrint.logLevel == 0):
+            print("[DBG] "+value)
         else:
             pass
 
     printDebug = classmethod(printDebug)
 
     def printLog(cls, value):
-        if (logPrint.logLevel >= 1):
-            print(value)
+        if (logPrint.logLevel <= 1):
+            print("[LOG] "+value)
         else:
             pass
 
     printLog = classmethod(printLog)
 
     def printError(cls, value):
-        if (logPrint.logLevel >= 2):
-            print(value)
+        if (logPrint.logLevel <= 2):
+            print("[ERR] "+value)
         else:
             pass
 

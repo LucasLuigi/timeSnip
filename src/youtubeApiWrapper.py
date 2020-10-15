@@ -28,7 +28,7 @@ class youtubeApiWrapper():
         # Expected format: ['http(s)', 'www', 'youtube', 'com', 'watch', 'v', '<ID>' ...]
         if (len(splittedListFromUrl) < 2):
             raise urlBadlyFormatted(
-                "Url "+youtubeUrl+" badly formatted: too short")
+                "URL "+youtubeUrl+" badly formatted: too short")
         else:
             if (splittedListFromUrl[1] == "www"):
                 # In the next robustness, count "www" as part of the list
@@ -39,20 +39,20 @@ class youtubeApiWrapper():
         # Cf expected format
         if (len(splittedListFromUrl) < 7+urlContainsWww):
             raise urlBadlyFormatted(
-                "Url "+youtubeUrl+" badly formatted: not enough parts")
+                "URL "+youtubeUrl+" badly formatted: not enough parts")
         else:
             # Check if first word is http(s)
             if (not (splittedListFromUrl[0] == "http") and not (splittedListFromUrl[0] == "https")):
                 raise urlBadlyFormatted(
-                    "Url "+youtubeUrl+" badly formatted: not an URL")
+                    "URL "+youtubeUrl+" badly formatted: not an URL")
             # Check if we are on Youtube
             if (not (splittedListFromUrl[1+urlContainsWww] == "youtube")):
                 raise urlBadlyFormatted(
-                    "Url "+youtubeUrl+" badly formatted: not a Youtube IRL")
+                    "URL "+youtubeUrl+" badly formatted: not a Youtube IRL")
             # Check if we are on a Youtube video (watch?v=)
             if (not (splittedListFromUrl[3+urlContainsWww] == "watch") or not (splittedListFromUrl[4+urlContainsWww] == "v")):
                 raise urlBadlyFormatted(
-                    "Url "+youtubeUrl+" badly formatted: not a Youtube video IRL")
+                    "URL "+youtubeUrl+" badly formatted: not a Youtube video IRL")
 
         videoId = splittedListFromUrl[5+urlContainsWww]
         logPrint.printDebug("videoId: "+videoId)
@@ -79,9 +79,8 @@ class youtubeApiWrapper():
             client_secrets_file, self.scopes)
         # Calls OAUTH2 services on a Browser
         # FIXME Store credentials to prevent a new authorization at every run
-        # credentials = flow.run_console()
         credentials = flow.run_local_server(
-            success_message="Abonnez vous a LukkoLuigi sur Twitch")
+            success_message="Twitch: @LukkoLuigi")
         youtube = googleapiclient.discovery.build(
             api_service_name, api_version, credentials=credentials)
 
@@ -104,6 +103,6 @@ class youtubeApiWrapper():
 # Raised when the Youtube IRL is badly formatted
 class urlBadlyFormatted(Exception):
     def __init__(self, message):
-        self.message = "Error: "+message+". Exiting."
+        self.message = message+". Exiting."
         logPrint.printError(message)
         exit(-2)
