@@ -195,6 +195,9 @@ class descriptionParser():
                             "Chapters pattern not found. Exiting.")
                         exit(-4)
 
+                    logPrint.printLog("Matching line found, line "+str(self.lineNbZeroZero +
+                                                                       idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors)+", time "+time)
+
                     # The flag are used to stop the search when the true beginning/end of the title have been found
                     flagTrueBeginningOfTitleFound = False
                     flagTrueEndOfTitleFound = False
@@ -232,15 +235,20 @@ class descriptionParser():
                 else:
                     if numberOfRemainingAttemptsToParseEachLine > 0:
                         # Second chance
+                        logPrint.printLog("Not matching line found, line "+str(self.lineNbZeroZero +
+                                                                               idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors)+", another chance is given.")
                         numberOfRemainingAttemptsToParseEachLine = numberOfRemainingAttemptsToParseEachLine - 1
                         offsetForIdxMatrixBecauseOfFalseErrors = offsetForIdxMatrixBecauseOfFalseErrors + 1
-                        logPrint.printLog("Not matching line found line "+str(self.lineNbZeroZero +
-                                                                              idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors)+", another chance is given.")
             else:
                 # No more time is detected and the formatting error margin is consumed, the chapter list is over
+                logPrint.printLog("No more matching line found, line "+str(self.lineNbZeroZero +
+                                                                           idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors)+", the chapter list parsing is over.")
                 self.chaptersMatrixSize = idxMatrix
                 # End the while loop
                 idxMatrix = self.MAX_SIZE_OF_MATRIX
 
-        logPrint.printLog("The chapter matrix is " +
-                          str(self.chaptersMatrixSize)+" lines long.")
+        logPrint.printDebug("chaptersMatrix, " +
+                            str(self.chaptersMatrixSize)+" lines: ")
+        for idxMatrix in range(self.chaptersMatrixSize):
+            logPrint.printDebug("|" +
+                                self.chaptersMatrix[idxMatrix, 0]+"|"+self.chaptersMatrix[idxMatrix, 1]+"|")
