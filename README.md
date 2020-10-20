@@ -28,6 +28,11 @@ pip install --upgrade google-api-python-client
 pip install --upgrade google-auth-oauthlib google-auth-httplib2
 ```
 * Add a JSON credential file _credentials/google-api-key.json coming from Google Developper Console. A project is needed and you will need to setup a OAuth 2.0 client ID. Visit the [Youtube API v3 documentation](https://developers.google.com/youtube/v3/getting-started) for further information.
+
+```
+I need more information on this file, maybe it can be pushed on Git... More news coming
+```
+
 * Run timeSnip:
 ```
 python src\timeSnip.py
