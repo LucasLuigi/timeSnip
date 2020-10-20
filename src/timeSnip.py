@@ -30,7 +30,7 @@ def main(argv):
             "" for idx in range(len(descrListFromCopyPaste))]
         for idx in range(len(descrListFromCopyPaste)):
             strippedDescrListFromCopyPaste[idx] = descrListFromCopyPaste[idx].strip(
-                "\n")
+                " \n")
         # Create a new descriptionParser with the pasted list stripped from the final \n
         descriptionParserInstFromCopyPaste = descriptionParser(
             strippedDescrListFromCopyPaste)
