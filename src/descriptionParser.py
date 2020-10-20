@@ -8,8 +8,9 @@ from logPrint import logPrint
 
 class descriptionParser():
 
-    def __init__(self, description):
-        self.description = description
+    def __init__(self, descriptionList):
+        # list is the only accepted type for descriptionList
+        self.descriptionLinesList = descriptionList
         self.chaptersMatrix = np.empty((500, 2), dtype=object)
 
     # Constants
@@ -19,9 +20,13 @@ class descriptionParser():
     # self.chaptersMatrixSize
 
     # Parse the description field to detect the time and title of each chapter
+    # Return if it has found chapters
     def parse(self):
-        self._findLineZero()
-        self._parseChapterList()
+        zeroLineFound = self._findLineZero()
+        if zeroLineFound:
+            # If 0:00 has been found, parse the rest of the chapters
+            self._parseChapterList()
+        return zeroLineFound
 
     # Check if the character as argument is 1, 2, 3, 4, 5, 6, 7, 8 or 9
     def _checkIfCharIsBetweenOneAndNine(self, char):
@@ -110,6 +115,7 @@ class descriptionParser():
         return patternId
 
     # Apply regex and double check to look for line containing the chapter 0 at time 0:00
+    # Return if it has found chapters
     def _findLineZero(self):
         lineNb = 0
         # Flag to stop the search for 0:00
@@ -117,7 +123,6 @@ class descriptionParser():
 
         logPrint.printLog("Parsing the description field")
 
-        self.descriptionLinesList = self.description.splitlines()
         for line in self.descriptionLinesList:
             if (not isLineAtTimeZero):
                 # Not find yet: perform the search
@@ -135,9 +140,10 @@ class descriptionParser():
                         # self.idxCharZeroZero = idxReturnedFromFind
                         self.lineNbZeroZero = lineNb
                 lineNb = lineNb+1
-        if (not isLineAtTimeZero):
-            logPrint.printError("0:00 not found. Exiting.")
-            exit(-3)
+        if not isLineAtTimeZero:
+            logPrint.printError("0:00 not found.")
+
+        return isLineAtTimeZero
 
     # Once the beginning of the chapter list found, parse it entirely and store it in a matrix
     def _parseChapterList(self):

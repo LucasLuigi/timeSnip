@@ -23,7 +23,7 @@ class youtubeApiWrapper():
     # Extract the video ID from the Youtube URL
     def extractIdFromUrl(self, youtubeUrl):
         splittedListFromUrl = re.split(
-            r'[^A-Za-z0-9\-]+', youtubeUrl)
+            r'[^A-Za-z0-9_-]+', youtubeUrl)
         logPrint.printDebug("splittedListFromUrl: "+str(splittedListFromUrl))
         # Expected format: ['http(s)', 'www', 'youtube', 'com', 'watch', 'v', '<ID>' ...]
         if (len(splittedListFromUrl) < 2):
@@ -37,7 +37,7 @@ class youtubeApiWrapper():
                 urlContainsWww = 0
 
         # Cf expected format
-        if (len(splittedListFromUrl) < 7+urlContainsWww):
+        if (len(splittedListFromUrl) < 6+urlContainsWww):
             raise urlBadlyFormatted(
                 "URL "+youtubeUrl+" badly formatted: not enough parts")
         else:

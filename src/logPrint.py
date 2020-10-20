@@ -5,7 +5,7 @@ class logPrint:
     # Debug level :
     #   0 : debug
     #   1 : log
-    #   2 : error
+    #   2 : error and informations
     logLevel = 2
 
     def __init__(self, debugLevel=2):
@@ -39,3 +39,11 @@ class logPrint:
             pass
 
     printError = classmethod(printError)
+
+    def printInfo(cls, value):
+        if (logPrint.logLevel <= 2):
+            print("[INF] "+value)
+        else:
+            pass
+
+    printInfo = classmethod(printInfo)
