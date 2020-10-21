@@ -22,11 +22,15 @@ class descriptionParser():
     # Parse the description field to detect the time and title of each chapter
     # Return if it has found chapters
     def parse(self):
-        zeroLineFound = self._findLineZero()
-        if zeroLineFound:
+        returnStatus = self._findLineZero()
+        if returnStatus:
             # If 0:00 has been found, parse the rest of the chapters
             self._parseChapterList()
-        return zeroLineFound
+            returnStatus = self._buildPublicChaptersMatrix()
+        return returnStatus
+
+    def getChaptersMatrix(self):
+        return self.publicChaptersMatrix
 
     # Check if the character as argument is 1, 2, 3, 4, 5, 6, 7, 8 or 9
     def _checkIfCharIsBetweenOneAndNine(self, char):
@@ -69,12 +73,6 @@ class descriptionParser():
                 # We can say for sure the time detected is 0:00
                 returnValue = True
 
-        return returnValue
-
-    # Returns True if the tested characters seems to not be part of a title name
-    def _checkIfCharIsDelimAndNotPartOfTitle(self, char):
-        returnValue = (char == "-" or char == " " or char ==
-                       "[" or char == "]" or char == "_" or char == "#" or char == ":")
         return returnValue
 
     # From regex splitting of the line containing 0:00, analyze the pattern to then capture all the chapters in a matrix
@@ -203,35 +201,8 @@ class descriptionParser():
 
                     logPrint.printLog("Matching line found, line "+str(self.lineNbZeroZero +
                                                                        idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors)+", time "+time)
-
-                    # The flag are used to stop the search when the true beginning/end of the title have been found
-                    flagTrueBeginningOfTitleFound = False
-                    flagTrueEndOfTitleFound = False
-                    # Search for useless characters in the beginning of titleAndDelim that have to be cut
-                    # This search is done at the beginning and at the end
-                    for idxChar in range(len(titleAndDelim)):
-                        # Testing that the chars beginning titleAndDelim are delimiter chars or title letters
-                        if not flagTrueBeginningOfTitleFound:
-                            isBeginningCharDelimChar = self._checkIfCharIsDelimAndNotPartOfTitle(
-                                titleAndDelim[idxChar])
-                            if(not isBeginningCharDelimChar):
-                                flagTrueBeginningOfTitleFound = True
-                                # titleAndDelim[idxChar] is the beginning of the title, we store the index for latter splitting of titleAndDelim
-                                idxCharTrueBeginningOfTitle = idxChar
-
-                        # Testing that the chars beginning titleAndDelim are delimiter chars or title letters
-                        idxCharReverse = (len(titleAndDelim)-1) - idxChar
-                        if not flagTrueEndOfTitleFound:
-                            isEndingCharDelimChar = self._checkIfCharIsDelimAndNotPartOfTitle(
-                                titleAndDelim[idxCharReverse])
-                            if(not isEndingCharDelimChar):
-                                flagTrueEndOfTitleFound = True
-                                # titleAndDelim[idxChar] is the end of the title, we store the index for latter splitting of titleAndDelim
-                                idxCharTrueEndOfTitle = idxCharReverse
-
-                    # The title is splitted to not store useless characters in the beginning
-                    # The +1 is here to include the latest detect char of the title
-                    title = titleAndDelim[idxCharTrueBeginningOfTitle:idxCharTrueEndOfTitle+1]
+                    # The title is stripped to not store useless characters in the beginning and in the end
+                    title = titleAndDelim.strip(" -_[]()#:")
 
                     self.chaptersMatrix[idxMatrix, 0] = time
                     self.chaptersMatrix[idxMatrix, 1] = title
@@ -258,3 +229,49 @@ class descriptionParser():
         for idxMatrix in range(self.chaptersMatrixSize):
             logPrint.printDebug("|" +
                                 self.chaptersMatrix[idxMatrix, 0]+"|"+self.chaptersMatrix[idxMatrix, 1]+"|")
+
+    # Convert string time ("1:12") into an integer, the number of seconds (72)
+    def _stringTimeToIntegerTimeInSeconds(self, stringTime):
+        integerTime = 0
+        # Multiplier if we are in seconds, minutes or hours
+        unitMultiplier = 1
+        # Multiplier according to the position of the figures in the number
+        decimalMultiplier = 1
+        for idxCharForward in range(len(stringTime)):
+            # Browse the string in reverse order
+            idxChar = len(stringTime)-idxCharForward - 1
+            char = stringTime[idxChar]
+            if (char >= "0" and char <= "9"):
+                figure = int(char)
+                integerTime = integerTime + \
+                    (unitMultiplier * decimalMultiplier * figure)
+                # For the next step (if it is a figure and not ":" or out of range), add a power of 10
+                # Do not change the unit
+                decimalMultiplier = 10*decimalMultiplier
+            else:
+                if (char == ":"):
+                    # Reset decimalMultiplier for next figure
+                    decimalMultiplier = 1
+                    # Unit will change on next figure
+                    # Seconds to minutes and minutes to hours have the same multiplier
+                    unitMultiplier = 60*unitMultiplier
+                else:
+                    logPrint.printError(
+                        char + " is not a figure or a comma, it is not possible to convert the time "+stringTime+" in seconds. Exiting.")
+                    exit(-6)
+        return integerTime
+
+    # From chapterMatrix, which is private and not ready to use in this format, create another numpy matrix
+    # where time in the first column are integers
+    def _buildPublicChaptersMatrix(self):
+        returnStatus = True
+        self.publicChaptersMatrix = np.empty(
+            (self.chaptersMatrixSize, 2), dtype=object)
+        for idxMatrix in range(self.chaptersMatrixSize):
+            self.publicChaptersMatrix[idxMatrix, 0] = self._stringTimeToIntegerTimeInSeconds(
+                self.chaptersMatrix[idxMatrix, 0])
+            self.publicChaptersMatrix[idxMatrix,
+                                      1] = self.chaptersMatrix[idxMatrix, 1]
+
+        # TODO Check if the matrix is written in crescent order of times and adjust returnStatus in function
+        return returnStatus

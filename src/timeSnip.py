@@ -38,6 +38,10 @@ def main(argv):
         if(not succesfullParsing):
             logPrint.printError("Second attempt failed. Exiting.")
             exit(-5)
+        else:
+            chaptersMatrix = descriptionParserInstFromCopyPaste.getChaptersMatrix()
+    else:
+        chaptersMatrix = descriptionParserInstFromYoutube.getChaptersMatrix()
 
 
 if __name__ == "__main__":
