@@ -5,6 +5,7 @@ import sys
 from logPrint import logPrint
 from youtubeApiWrapper import youtubeApiWrapper
 from descriptionParser import descriptionParser
+from musicDisplayer import musicDisplayer
 
 
 def main(argv):
@@ -42,6 +43,15 @@ def main(argv):
             chaptersMatrix = descriptionParserInstFromCopyPaste.getChaptersMatrix()
     else:
         chaptersMatrix = descriptionParserInstFromYoutube.getChaptersMatrix()
+
+    # FIXME to get from a .ini file, not as a main arg
+    outputFilePath = "D:\\Program Files\\Snip\\Snip.txt"
+
+    # Instantiate musicDisplayer to launch a timer and print the correct music name
+    musicDisplayerInst = musicDisplayer(outputFilePath, chaptersMatrix)
+
+    # Launch the timer
+    musicDisplayerInst.start()
 
 
 if __name__ == "__main__":

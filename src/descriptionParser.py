@@ -267,11 +267,16 @@ class descriptionParser():
         returnStatus = True
         self.publicChaptersMatrix = np.empty(
             (self.chaptersMatrixSize, 2), dtype=object)
+        previousTimeInSeconds = -1
         for idxMatrix in range(self.chaptersMatrixSize):
-            self.publicChaptersMatrix[idxMatrix, 0] = self._stringTimeToIntegerTimeInSeconds(
+            timeinSeconds = self._stringTimeToIntegerTimeInSeconds(
                 self.chaptersMatrix[idxMatrix, 0])
+            if timeinSeconds < previousTimeInSeconds:
+                # Something went wrong and the matrix is not in crescent order
+                logPrint.printError(
+                    self.chaptersMatrix[idxMatrix, 0] + " is smaller than the previous time, "+self.chaptersMatrix[idxMatrix-1, 0]+", the matrix is not ordered in a crescent order.")
+                returnStatus = False
+            self.publicChaptersMatrix[idxMatrix, 0] = timeinSeconds
             self.publicChaptersMatrix[idxMatrix,
                                       1] = self.chaptersMatrix[idxMatrix, 1]
-
-        # TODO Check if the matrix is written in crescent order of times and adjust returnStatus in function
         return returnStatus
