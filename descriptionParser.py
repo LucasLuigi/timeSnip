@@ -202,7 +202,7 @@ class descriptionParser():
                     logPrint.printLog("Matching line found, line "+str(self.lineNbZeroZero +
                                                                        idxMatrix + offsetForIdxMatrixBecauseOfFalseErrors)+", time "+time)
                     # The title is stripped to not store useless characters in the beginning and in the end
-                    title = titleAndDelim.strip(" -_[]()#:")
+                    title = titleAndDelim.strip(" -_[]#:")
 
                     self.chaptersMatrix[idxMatrix, 0] = time
                     self.chaptersMatrix[idxMatrix, 1] = title

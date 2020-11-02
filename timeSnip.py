@@ -9,6 +9,8 @@ from musicDisplayer import musicDisplayer
 
 
 def main(argv):
+    prefix = ""
+
     youtubeApiInst = youtubeApiWrapper(sys.argv[1])
     descrFromYoutubeApi = youtubeApiInst.getDescriptionField()
     # descriptionParser acceptis only list of str
@@ -47,8 +49,13 @@ def main(argv):
     # FIXME to get from a .ini file, not as a main arg
     outputFilePath = "D:\\Program Files\\Snip\\Snip.txt"
 
+    if len(sys.argv) == 3:
+        prefix = sys.argv[2]
+    else:
+        prefix = ""
+
     # Instantiate musicDisplayer to launch a timer and print the correct music name
-    musicDisplayerInst = musicDisplayer(outputFilePath, chaptersMatrix)
+    musicDisplayerInst = musicDisplayer(outputFilePath, chaptersMatrix, prefix)
 
     # Launch the timer
     musicDisplayerInst.start()
@@ -58,8 +65,8 @@ if __name__ == "__main__":
     # Log level = debug
     logPrint(0)
 
-    if len(sys.argv) == 2:
+    if len(sys.argv) >= 2 and len(sys.argv) <= 3:
         main(sys.argv[1:])
     else:
-        logPrint.printError("Usage: timeSnip <YoutubeURL>")
+        logPrint.printError("Usage: timeSnip <YoutubeURL> [prefix]")
         exit(-1)

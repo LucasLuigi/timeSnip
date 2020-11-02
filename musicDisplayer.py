@@ -8,9 +8,10 @@ from logPrint import logPrint
 
 class musicDisplayer():
 
-    def __init__(self, filePath, chaptersMatrix):
+    def __init__(self, filePath, chaptersMatrix, prefix):
         self.chaptersMatrix = chaptersMatrix
         self.filePath = filePath
+        self.prefix = prefix
         logPrint.printInfo("File path is "+self.filePath)
 
     def start(self):
@@ -24,7 +25,7 @@ class musicDisplayer():
             # Execution is paused before next milestone
             time.sleep(float(durationBeforeNextTitle))
 
-            self._writeTitleInFile(nextTitle)
+            self._writeTitleInFile(self.prefix+nextTitle)
 
             # Store the date for the next iteration
             previousDate = nextDate

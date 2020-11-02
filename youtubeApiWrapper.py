@@ -71,14 +71,12 @@ class youtubeApiWrapper():
         api_version = "v3"
 
         # This file is secret
-        # FIXME Authorize the case where the cwd is src and not its parent
         client_secrets_file = os.getcwd()+"\\_credentials\\google-api-key.json"
 
         # Get credentials and create an API client
         flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
             client_secrets_file, self.scopes)
         # Calls OAUTH2 services on a Browser
-        # FIXME Store credentials to prevent a new authorization at every run
         credentials = flow.run_local_server(
             success_message="Twitch: @LukkoLuigi")
         youtube = googleapiclient.discovery.build(
