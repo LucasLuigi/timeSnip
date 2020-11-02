@@ -35,5 +35,5 @@ I need more information on this file, maybe it can be pushed on Git... More news
 
 * Run timeSnip:
 ```
-python src\timeSnip.py
+python timeSnip.py <YoutubeURL> [prefix]
 ```
