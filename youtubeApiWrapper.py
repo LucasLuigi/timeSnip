@@ -7,7 +7,7 @@ import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 
-from logPrint import *
+from logPrint import logPrint
 
 
 class youtubeApiWrapper():

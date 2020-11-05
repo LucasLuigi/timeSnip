@@ -34,6 +34,5 @@ class musicDisplayer():
         logPrint.printInfo("Writing \""+title+"\"")
 
         f = open(self.filePath, "w", encoding="utf-8")
-        # TODO Add customized prefix/suffix (Artist...)
         f.write(title)
         f.close()

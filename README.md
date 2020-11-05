@@ -23,17 +23,23 @@ This project can be seen as a complement (or not) of Snip, and can be used for s
 
 * Use python3
 * Call these pip install:
-```
+
+```bash
 pip install --upgrade google-api-python-client
 pip install --upgrade google-auth-oauthlib google-auth-httplib2
+pip install --upgrade requests
+pip install --upgrade numpy
 ```
+
 * Add a JSON credential file _credentials/google-api-key.json coming from Google Developper Console. A project is needed and you will need to setup a OAuth 2.0 client ID. Visit the [Youtube API v3 documentation](https://developers.google.com/youtube/v3/getting-started) for further information.
 
 ```
 I need more information on this file, maybe it can be pushed on Git... More news coming
 ```
 
+* Modify config.ini to set the path of your output file. You can if you want too modify the verbosity level of the app.
 * Run timeSnip:
-```
+
+```bash
 python timeSnip.py <YoutubeURL> [prefix]
 ```

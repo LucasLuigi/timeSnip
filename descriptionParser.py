@@ -17,8 +17,6 @@ class descriptionParser():
     MAX_SIZE_OF_MATRIX = 100
     MAX_ATTEMPTS_NB_TO_PARSE_TIME_AND_TITLE = 2
 
-    # self.chaptersMatrixSize
-
     # Parse the description field to detect the time and title of each chapter
     # Return if it has found chapters
     def parse(self):

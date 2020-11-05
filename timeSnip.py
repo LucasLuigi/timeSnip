@@ -2,13 +2,14 @@
 
 import sys
 
+from internalConfig import internalConfig
 from logPrint import logPrint
 from youtubeApiWrapper import youtubeApiWrapper
 from descriptionParser import descriptionParser
 from musicDisplayer import musicDisplayer
 
 
-def main(argv):
+def main(outputFilePath, argv):
     prefix = ""
 
     youtubeApiInst = youtubeApiWrapper(sys.argv[1])
@@ -46,13 +47,13 @@ def main(argv):
     else:
         chaptersMatrix = descriptionParserInstFromYoutube.getChaptersMatrix()
 
-    # FIXME to get from a .ini file, not as a main arg
-    outputFilePath = "D:\\Program Files\\Snip\\Snip.txt"
-
     if len(sys.argv) == 3:
         prefix = sys.argv[2]
+        logPrint.printLog("The prefix \""+prefix +
+                          "\" read from the program's arguments, will be added before each title.")
     else:
         prefix = ""
+        logPrint.printLog("No prefix read from the program's arguments.")
 
     # Instantiate musicDisplayer to launch a timer and print the correct music name
     musicDisplayerInst = musicDisplayer(outputFilePath, chaptersMatrix, prefix)
@@ -62,11 +63,20 @@ def main(argv):
 
 
 if __name__ == "__main__":
+    # Parsing config.ini
+    internalConfigInst = internalConfig()
+
+    logLevel = internalConfigInst.getVerbosityLevel()
+    outputFilePath = internalConfigInst.getOutputFilePath()
+
     # Log level = debug
-    logPrint(0)
+    logPrint(logLevel)
+
+    logPrint.printDebug("Config.ini: logLevel="+str(logLevel))
+    logPrint.printDebug("Config.ini: outputFilePath="+outputFilePath)
 
     if len(sys.argv) >= 2 and len(sys.argv) <= 3:
-        main(sys.argv[1:])
+        main(outputFilePath, sys.argv[1:])
     else:
-        logPrint.printError("Usage: timeSnip <YoutubeURL> [prefix]")
+        logPrint.printError("Usage: timeSnip.py <YoutubeURL> [prefix]")
         exit(-1)
