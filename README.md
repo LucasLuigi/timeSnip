@@ -13,6 +13,7 @@ This project can be seen as a complement (or not) of Snip, and can be used for s
 * Parsed chapters list can follows different formats (pattern)
 * If the parsed description contains to chapter list, the user has a second attempt to paste the chapter list if it is written in a commentary for example
 * Format the output file text in a customized way (artist name, album, mix name, separation...)
+* A file is used to store the configuration of the script, config.ini
 
 ### Evolutions
 
