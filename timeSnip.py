@@ -27,7 +27,7 @@ def main(outputFilePath, argv):
         # Another parsing is attempted using stdin
         logPrint.printInfo(
             "Copy/paste the description list you want, then hit Ctrl+Z")
-        # returns a line of str
+        # returns a list of str
         descrListFromCopyPaste = sys.stdin.readlines()
         # strip this line from "\n"
         strippedDescrListFromCopyPaste = [

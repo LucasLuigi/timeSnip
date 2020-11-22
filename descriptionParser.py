@@ -202,6 +202,11 @@ class descriptionParser():
                     # The title is stripped to not store useless characters in the beginning and in the end
                     title = titleAndDelim.strip(" -_[]#:")
 
+                    # Strip remaining parenthesis around timestamp e.g. "(25:32) title" without cutting the included parenthesis of one title
+                    # e.g. "(25:32) title (featuring Pitbull)"
+                    title = title.lstrip(") ")
+                    title = title.rstrip("( ")
+
                     self.chaptersMatrix[idxMatrix, 0] = time
                     self.chaptersMatrix[idxMatrix, 1] = title
 
