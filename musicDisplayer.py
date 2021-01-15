@@ -30,8 +30,13 @@ class musicDisplayer():
             # Store the date for the next iteration
             previousDate = nextDate
 
+        # FIXME Wait for the end of the last song (we do not have the info) before flushing the file
+        logPrint.printInfo("End of the video, erasing the file")
+        # self._writeTitleInFile("")
+
     def _writeTitleInFile(self, title):
-        logPrint.printInfo("Writing \""+title+"\"")
+        if len(title) > 0:
+            logPrint.printInfo("Writing \""+title+"\"")
 
         f = open(self.filePath, "w", encoding="utf-8")
         f.write(title)
