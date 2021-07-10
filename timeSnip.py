@@ -14,7 +14,7 @@ def main(outputFilePath, argv):
 
     youtubeApiInst = youtubeApiWrapper(sys.argv[1])
     descrFromYoutubeApi = youtubeApiInst.getDescriptionField()
-    # descriptionParser acceptis only list of str
+    # descriptionParser accepts only list of str
     descrListFromYoutubeApi = descrFromYoutubeApi.splitlines()
 
     # First attempt of chapter parsing using what Youtube API returned
