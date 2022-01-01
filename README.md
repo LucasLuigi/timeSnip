@@ -5,7 +5,7 @@
 This script allows to update a text file with the music currently played from a one-video music mix (from Youtube or from a file for instance), by submitting an URL of a Youtube video mixes. Usually, its description contains a list of chapters following this format: "timecode Music name".
 This project can be seen as a complement (or not) of Snip, and can be used for streamers to display music name.
 
-## Features 
+## Features
 
 ### Current (work in progress)
 
